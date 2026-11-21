@@ -52,6 +52,12 @@ try {
   fail(`could not be read from ${BOT_DIR}: ${(err as Error).message}`);
 }
 
+// The gate refuses a VIDEO.json over 16 KiB, so refuse it here too with a
+// clear message instead of letting a too-large file reach the submission.
+if (raw.length > 16384) {
+  fail(`is ${raw.length} bytes, over the gate's 16 KiB limit for VIDEO.json.`);
+}
+
 let data: unknown;
 try {
   data = JSON.parse(raw);
